@@ -76,7 +76,7 @@ public class DownloadTask extends AsyncTask<String,Void,String> {
 
 
 
-            double minTemp = 0, maxTemp=0 ;
+            double minTemp = 0, maxTemp=0 , humidity=0 ,pressure =0,temp=0;
 
             for(int i = 0; i < forecastArray.length(); i++) {
                 JSONObject dailyForecast = forecastArray.getJSONObject(i);
@@ -92,17 +92,23 @@ public class DownloadTask extends AsyncTask<String,Void,String> {
 
                 }
 
-                minTemp = tempObject.getDouble("temp");
+                temp = tempObject.getDouble("temp");
+                humidity=tempObject.getDouble("humidity");
+                minTemp=tempObject.getDouble("temp_min");
+                maxTemp=tempObject.getDouble("temp_max");
+                pressure=tempObject.getDouble("pressure");
+
 
         //        description=weather.getString("description");
 
             }
 
 
-            int temperatureInteger = (int) (minTemp - 273.15);
+            int temperatureInteger = (int) (temp - 273.15);
             System.out.println("Fucking Temperature is "+temperatureInteger);
 
             TodaysWeatherFragment.temp.setText(String.valueOf(temperatureInteger+" \u2103"));
+            TodaysWeatherFragment.humidity.setText("Humidity :"+String.valueOf(humidity)+"\n"+"Minimum Temp :"+String.valueOf(minTemp)+"\n"+"Max Temp :"+String.valueOf(maxTemp)+"\n"+"Pressure :"+String.valueOf(pressure));
             TodaysWeatherFragment.city.setText(String.valueOf(cityName));
             TodaysWeatherFragment.desp.setText(String.valueOf(description));
             System.out.println("No the condition is here "+type);

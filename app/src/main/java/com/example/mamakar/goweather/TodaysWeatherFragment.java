@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 public class TodaysWeatherFragment extends Fragment {
 
-    static TextView city;
+    static TextView city , humidity;
     static TextView temp;
     static  TextView desp;
     static LinearLayout back_weather;
@@ -34,6 +34,7 @@ public class TodaysWeatherFragment extends Fragment {
         imges=(ImageView) mainView.findViewById(R.id.imageView);
         city = (TextView) mainView.findViewById(R.id.city);
         desp = (TextView) mainView.findViewById(R.id.description);
+        humidity = (TextView) mainView.findViewById(R.id.humidity);
         Intent intent = getActivity().getIntent();
         String tv1= intent.getExtras().getString("location");
 
