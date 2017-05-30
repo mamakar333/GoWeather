@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity
                 case 1:
                     return new WeeklyWeather();
                 case 2:
-                    return new Fragment();
+                    return new DeveloperInfo();
             }
 
             return null;
