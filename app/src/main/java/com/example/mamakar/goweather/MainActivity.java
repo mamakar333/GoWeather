@@ -1,9 +1,17 @@
 package com.example.mamakar.goweather;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,11 +30,6 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    static TextView city;
-    static TextView temp;
-    static  TextView desp;
-   static LinearLayout back_weather;
-    static ImageView imges;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,30 +37,39 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-          back_weather = (LinearLayout) findViewById(R.id.linear_lay);
 
 
-        temp = (TextView) findViewById(R.id.showtemp);
-        imges=(ImageView) findViewById(R.id.imageView);
-        city = (TextView) findViewById(R.id.city);
-        desp = (TextView) findViewById(R.id.description);
-        Intent intent = getIntent();
-       String tv1= intent.getExtras().getString("location");
 //String tv1 ="London";
 
-        DownloadTask task = new DownloadTask();
 
 
-        task.execute("http://api.openweathermap.org/data/2.5/forecast?q="+String.valueOf(tv1)+",DE&appid=9f54540cbe4e4980ddca6ba8201b8f6e");
-        //  String k = " http://api.openweathermap.org/data/2.5/weather?lat=35&lon=139&&appid=9f54540cbe4e4980ddca6ba8201b8f6e";
 
-
-//        String pump = "http://api.openweathermap.org/data/2.5/forecast?q=London,DE&appid=9f54540cbe4e4980ddca6ba8201b8f6e";
-        //      task.execute(pump);
+        // Tabbed Layout code starts here
 
 
 
 
+        // Get the ViewPager and set it's PagerAdapter so that it can display items
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        PagerAdapter pagerAdapter =
+                new PagerAdapter(getSupportFragmentManager(), MainActivity.this);
+        viewPager.setAdapter(pagerAdapter);
+
+        // Give the TabLayout the ViewPager
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
+
+        // Iterate over all tabs and set the custom view
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            tab.setCustomView(pagerAdapter.getTabView(i));
+        }
+
+
+
+
+
+        //Tabbed Layout Ends here
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -69,14 +81,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
@@ -89,6 +94,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -105,6 +115,9 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+            Intent intent = new Intent(MainActivity.this,SelectCity.class);
+            startActivity(intent);
             return true;
         }
 
@@ -135,4 +148,56 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+
+
+
+    class PagerAdapter extends FragmentPagerAdapter {
+
+        String tabTitles[] = new String[] { "Today", "Weekly", "Nothing" };
+        Context context;
+
+        public PagerAdapter(FragmentManager fm, Context context) {
+            super(fm);
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return tabTitles.length;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+
+            switch (position) {
+                case 0:
+                    return new TodaysWeatherFragment();
+                case 1:
+                    return new WeeklyWeather();
+                case 2:
+                    return new Fragment();
+            }
+
+            return null;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            // Generate title based on item position
+            return tabTitles[position];
+        }
+
+        public View getTabView(int position) {
+            View tab = LayoutInflater.from(MainActivity.this).inflate(R.layout.custom_tab, null);
+            TextView tv = (TextView) tab.findViewById(R.id.custom_text);
+            tv.setText(tabTitles[position]);
+            return tab;
+        }
+
+    }
+
+
+
 }

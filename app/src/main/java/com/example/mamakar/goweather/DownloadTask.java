@@ -69,24 +69,10 @@ public class DownloadTask extends AsyncTask<String,Void,String> {
 
             cityName = coord.getString("name");
 
-            /*if(coord.has("lon")) {
-                 lon = Double.parseDouble(coord.getString("lon"));
-            }
-            if(coord.has("lat")) {
-                 lat = Double.parseDouble(coord.getString("lat"));
-            }
- System.out.println("Ths longitude is "+lon+ "the latitutde is "+lat);
-           */
-
-
-
-
-
-         //   JSONObject list = new JSONObject((jsonObject.getString("list")));
 
 
             JSONArray forecastArray = jsonObject.getJSONArray("list");
-            String description=null;
+            String description=null , type=null;
 
 
 
@@ -101,6 +87,7 @@ public class DownloadTask extends AsyncTask<String,Void,String> {
                 for(int j=0;j<weatherArray.length();j++){
                     JSONObject floyd = weatherArray.getJSONObject(j);
                     description = floyd.getString("description");
+                    type=floyd.getString("main");
 
 
                 }
@@ -109,47 +96,34 @@ public class DownloadTask extends AsyncTask<String,Void,String> {
 
         //        description=weather.getString("description");
 
-
-            //    maxTemp = tempObject.getDouble("max");
-                //add these minTemp and maxTemp to array or the
-                //way you want to use
-
-        /*        JSONArray weatherArray = forecastArray.getJSONArray(Integer.parseInt("weather"));
-                for(int j=0;j<weatherArray.length();j++){
-                    JSONObject floyd = weatherArray.getJSONObject(j);
-                    description = floyd.getString("description");
-
-
-                }
-
-                */
             }
 
-          //  JSONObject weatherData = new JSONObject(jsonObject.getString("list.main"));
 
-          //  Double temperature = Double.parseDouble(weatherData.getString("temp"));
-            System.out.println("This is the Tribute "+description.replace(" ", ""));
             int temperatureInteger = (int) (minTemp - 273.15);
-       //     String placeName = jsonObject.getString("name");
             System.out.println("Fucking Temperature is "+temperatureInteger);
 
-            MainActivity.temp.setText(String.valueOf(temperatureInteger+" \u2103"));
-            MainActivity.city.setText(String.valueOf(cityName));
-            MainActivity.desp.setText(String.valueOf(description));
-
-            if(description.trim()=="clearsky"){
-               MainActivity.imges.setImageResource(R.mipmap.clear);
+            TodaysWeatherFragment.temp.setText(String.valueOf(temperatureInteger+" \u2103"));
+            TodaysWeatherFragment.city.setText(String.valueOf(cityName));
+            TodaysWeatherFragment.desp.setText(String.valueOf(description));
+            System.out.println("No the condition is here "+type);
+            if(type.equals("Clear")){
+               TodaysWeatherFragment.imges.setImageResource(R.mipmap.clear_sky);
                 System.out.println("Ok u entered here man lets party");
             }
-            if(description.trim()=="lightrain"){
+            if(type.equals("Rian")){
 
-                MainActivity.imges.setImageResource(R.mipmap.rain);
+                TodaysWeatherFragment.imges.setImageResource(R.mipmap.rain);
                 System.out.println("Ok u entered here man lets party");
             }
 
-            if(description.replace(" ","")=="scatteredclouds"){
+            if(type.equals("Clouds")){
 
-                MainActivity.imges.setImageResource(R.mipmap.rain);
+                TodaysWeatherFragment.imges.setImageResource(R.mipmap.clear);
+                System.out.println("Ok u entered here man lets party");
+            }
+            if(type.equals("Snow")){
+
+                TodaysWeatherFragment.imges.setImageResource(R.mipmap.snow);
                 System.out.println("Ok u entered here man lets party");
             }
 
